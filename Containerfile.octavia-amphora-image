@@ -1,0 +1,22 @@
+ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
+FROM $BASE_IMAGE
+
+WORKDIR /
+COPY copy_out.sh .
+
+ARG IMAGE_NAME=octavia-amphora-image
+ARG IMAGE_FILE=$IMAGE_NAME.qcow2
+ARG CHECKSUM_FILE=$IMAGE_FILE.sha256
+
+# The octavia-operator expects that the octavia-amphora-images.sha256sum file
+# exists
+ARG GLOBAL_CHECKSUM_FILE=${IMAGE_NAME}s.sha256sum
+
+COPY $IMAGE_FILE .
+COPY $CHECKSUM_FILE .
+RUN cp $CHECKSUM_FILE $GLOBAL_CHECKSUM_FILE
+ENV SRC_DIR=/
+ENV DEST_DIR=/target
+ENV CHECKSUM_FILE=$GLOBAL_CHECKSUM_FILE
+
+CMD ["/copy_out.sh"]

@@ -1,0 +1,42 @@
+- imagename: octavia-amphora-image
+  types: [qcow2]
+  elements:
+  # diskimage-builder elements
+  - centos
+  - vm
+  - pip-cache
+  - cloud-init-datasources
+  # edpm-image-builder elements
+  - repo-setup
+  # octavia elements
+  - haproxy-octavia
+  - rebind-sshd
+  - no-resolvconf
+  - amphora-agent
+  - octavia-lib
+  - sos
+  - remove-default-ints
+  - amphora-selinux
+  - disable-makecache
+  - keepalived-octavia
+  - ipvsadmin
+  - certs-ramfs
+  min-tmpfs: 7
+  debug-trace: 1
+  checksum: true
+  environment:
+    DIB_RELEASE: '9-stream'
+    DIB_EPEL_DISABLED: '1'
+    DIB_PYTHON_VERSION: '3'
+    DIB_IMAGE_SIZE: '3'
+    DIB_GRUB_TIMEOUT: '0'
+    #DIB_MODPROBE_BLACKLIST: 'usb-storage cramfs freevxfs jffs2 hfs hfsplus squashfs udf bluetooth'
+    # TODO remove memtest=0 when this change is available:
+    # https://review.opendev.org/c/openstack/diskimage-builder/+/884644
+    #DIB_BOOTLOADER_DEFAULT_CMDLINE: 'memtest=0'
+    #DIB_BOOTLOADER_VIRTUAL_TERMINAL: ''
+    DIB_OCTAVIA_AMP_USE_NFTABLES: '1'
+    DIB_YUM_MINIMAL_CREATE_INTERFACES: '0'
+    DIB_CLOUD_INIT_DATASOURCES: 'ConfigDrive'
+    DIB_INSTALLTYPE_pip_and_virtualenv: package
+    DIB_INSTALLTYPE_amphora_agent: package
